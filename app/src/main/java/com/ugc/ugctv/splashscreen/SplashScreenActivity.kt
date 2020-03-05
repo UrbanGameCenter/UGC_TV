@@ -13,8 +13,12 @@ import com.ugc.ugctv.model.Config
 import com.ugc.ugctv.model.UgcError
 import com.ugc.ugctv.services.TechnicalService
 import com.ugc.ugctv.R
+import com.ugc.ugctv.core.PreferenceManager
+import com.ugc.ugctv.model.Room
+import com.ugc.ugctv.settings.SettingsActivity
 import com.ugc.ugctv.tv.TvActivity
 import kotlinx.android.synthetic.main.splashscreen_activity.*
+import kotlinx.android.synthetic.main.tv_activity.*
 
 class SplashScreenActivity : AbstractActivity() {
 
@@ -24,9 +28,9 @@ class SplashScreenActivity : AbstractActivity() {
         setContentView(R.layout.splashscreen_activity)
         setTranslucideStatusBar()
 
-        showAppVersion()
-
         retry_button.setOnClickListener { getConfig() }
+
+        settings.setOnClickListener { startActivity(SettingsActivity.newIntent(baseContext))}
     }
 
     override fun onResume() {
@@ -43,8 +47,7 @@ class SplashScreenActivity : AbstractActivity() {
             object : RequestCallBack<Config> {
 
                 override fun onSuccess(response: Config) {
-                    startActivity(TvActivity.newIntent(baseContext))
-                    finishAffinity()
+                    showStartButton()
                 }
 
                 override fun onError(error: UgcError) {
@@ -55,10 +58,24 @@ class SplashScreenActivity : AbstractActivity() {
         )
     }
 
+    private fun showStartButton() {
+        progress_wheel.hide()
+
+        if(!PreferenceManager(baseContext).getRoom().equals(Room.EMPTY)){
+            start_button.startAnimation(
+                AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in))
+            start_button.visibility = View.VISIBLE
+
+            start_button.setOnClickListener {
+                startActivity(TvActivity.newIntent(baseContext))
+                finishAffinity()
+            }
+        }
+    }
+
     private fun showLoader() {
         progress_wheel.show()
         retry_button.visibility = View.GONE
-
     }
 
     private fun showRetry(){
@@ -66,14 +83,4 @@ class SplashScreenActivity : AbstractActivity() {
         progress_wheel.hide()
     }
 
-    private fun showAppVersion() {
-        try {
-            val version =
-                packageManager.getPackageInfo(packageName, 0).versionName
-            val versionText: String = getString(R.string.version_string).plus(version)
-            findViewById<TextView>(R.id.app_version_textview).setText(versionText)
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-    }
 }

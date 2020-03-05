@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="settings_itemview_attributes">
+        <attr name="settings_itemview_title" format="string" />
+        <attr name="settings_itemview_value" format="string" />
+    </declare-styleable>
+</resources>

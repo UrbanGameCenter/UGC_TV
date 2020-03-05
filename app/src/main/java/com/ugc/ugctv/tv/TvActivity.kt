@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder
 import com.ugc.ugctv.R
 import com.ugc.ugctv.core.AbstractActivity
 import com.ugc.ugctv.core.LOGGER_TAG
+import com.ugc.ugctv.core.PreferenceManager
 import com.ugc.ugctv.core.WEB_SERVICE_BASE_URL
 import com.ugc.ugctv.websocket.model.EventType
 import kotlinx.android.synthetic.main.tv_activity.*
@@ -73,9 +74,10 @@ class TvActivity : AbstractActivity() {
         if (socket.connected()) {
             Log.d(
                 LOGGER_TAG,
-                "Socket.io connection success !"
-            )
-            socket.emit(EventType.join.name, "UGC App TV")
+                "Socket.io connection success !")
+            socket.emit(
+                EventType.joinRoom.name,
+                PreferenceManager(baseContext).getRoom().name)
         } else {
             Log.e(
                 LOGGER_TAG,
