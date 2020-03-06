@@ -19,30 +19,31 @@ class SettingsActivity : AbstractActivity() {
             return Intent(context, SettingsActivity::class.java)
         }
     }
+    lateinit var selectRoomDialogfragment : SelectRoomDialogfragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.settings_activity)
 
-        if(PreferenceManager(baseContext).getRoom().equals(Room.EMPTY)){
+        if(PreferenceManager(baseContext).hasRoom()){
             room_settingview.setValue(getString(R.string.empty_room))
         }else{
             room_settingview.setValue(PreferenceManager(baseContext).getRoom().readableName)
         }
 
         room_settingview.setOnClickListener{
-            val selectRoomDialogfragment : SelectRoomDialogfragment = SelectRoomDialogfragment()
+            selectRoomDialogfragment = SelectRoomDialogfragment()
                 .setCallBack(object :SelectRoomCallback{
                     override fun onRoomSelected(room: Room) {
                         PreferenceManager(baseContext).setRoomName(room)
+                        selectRoomDialogfragment.dismiss()
                         room_settingview.setValue(PreferenceManager(baseContext).getRoom().readableName)
                     }
                 })
 
             selectRoomDialogfragment.show(supportFragmentManager, SUCCESS_DIALOG)
         }
-
 
         try {
             val version =

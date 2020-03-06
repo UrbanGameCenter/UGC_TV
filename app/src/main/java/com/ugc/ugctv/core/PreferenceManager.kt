@@ -23,7 +23,7 @@ class PreferenceManager(private val context: Context?) {
     fun getRoom(): Room {
         return Room.valueOf(
             getDefaultSharedPreferences(context).getString(
-                Keys.KEY_ROOM_NAME.key, Room.EMPTY.name).toString()
+                Keys.KEY_ROOM_NAME.key, null).toString()
         )
 
     }
@@ -31,6 +31,12 @@ class PreferenceManager(private val context: Context?) {
     fun setRoomName(room: Room) {
         getDefaultSharedPreferences(context).edit()
             .putString(Keys.KEY_ROOM_NAME.key, room.name).apply()
+    }
+
+    fun hasRoom(): Boolean {
+        return !getDefaultSharedPreferences(context)
+            .getString(Keys.KEY_ROOM_NAME.key, "")!!.isEmpty()
+
     }
 
 }

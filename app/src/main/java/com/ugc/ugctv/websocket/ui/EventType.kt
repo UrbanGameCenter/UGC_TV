@@ -3,7 +3,8 @@ package com.ugc.ugctv.websocket.model
 enum class EventType {
     serverMessage,
     supervisorMessage,
-    joinRoom,
+    join,
+    joinRoom
 
 
 }

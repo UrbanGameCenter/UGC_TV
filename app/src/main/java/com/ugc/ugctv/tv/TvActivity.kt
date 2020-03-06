@@ -17,6 +17,7 @@ import com.ugc.ugctv.core.AbstractActivity
 import com.ugc.ugctv.core.LOGGER_TAG
 import com.ugc.ugctv.core.PreferenceManager
 import com.ugc.ugctv.core.WEB_SERVICE_BASE_URL
+import com.ugc.ugctv.model.MessageFrom
 import com.ugc.ugctv.websocket.model.EventType
 import kotlinx.android.synthetic.main.tv_activity.*
 import org.json.JSONObject
@@ -58,7 +59,7 @@ class TvActivity : AbstractActivity() {
     }
 
     private fun subscribeEvent() {
-        socket.on(EventType.supervisorMessage.name, onSupervisorMessage)
+        socket.on(PreferenceManager(baseContext).getRoom().name, onSupervisorMessage)
         socket.on(EventType.serverMessage.name, onServerMessage)
         hasSubsribeToSocketEvent = true
     }
@@ -76,7 +77,7 @@ class TvActivity : AbstractActivity() {
                 LOGGER_TAG,
                 "Socket.io connection success !")
             socket.emit(
-                EventType.joinRoom.name,
+                EventType.join.name,
                 PreferenceManager(baseContext).getRoom().name)
         } else {
             Log.e(
@@ -93,7 +94,10 @@ class TvActivity : AbstractActivity() {
     private val onSupervisorMessage =
         Emitter.Listener { args: Array<Any> ->
             runOnUiThread {
-                showMessage(getMessage(args[0] as JSONObject))
+                showMessage(Gson()
+                    .fromJson(args[0] as String, MessageFrom::class.java)
+                    .message
+                )
             }
         }
 

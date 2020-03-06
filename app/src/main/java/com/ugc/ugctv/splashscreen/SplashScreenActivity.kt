@@ -61,7 +61,7 @@ class SplashScreenActivity : AbstractActivity() {
     private fun showStartButton() {
         progress_wheel.hide()
 
-        if(!PreferenceManager(baseContext).getRoom().equals(Room.EMPTY)){
+        if(PreferenceManager(baseContext).hasRoom()){
             start_button.startAnimation(
                 AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in))
             start_button.visibility = View.VISIBLE
