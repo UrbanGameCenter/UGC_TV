@@ -7,18 +7,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.animation.AnimationUtils
-import com.github.nkzawa.emitter.Emitter
-import com.github.nkzawa.socketio.client.IO
-import com.github.nkzawa.socketio.client.Socket
+
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ugc.ugctv.R
-import com.ugc.ugctv.core.AbstractActivity
-import com.ugc.ugctv.core.LOGGER_TAG
-import com.ugc.ugctv.core.PreferenceManager
-import com.ugc.ugctv.core.WEB_SERVICE_BASE_URL
+import com.ugc.ugctv.core.*
 import com.ugc.ugctv.model.MessageFrom
+import com.ugc.ugctv.splashscreen.SplashScreenActivity
 import com.ugc.ugctv.websocket.model.EventType
+import io.socket.client.IO
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.tv_activity.*
 import org.json.JSONObject
 
@@ -27,13 +26,10 @@ class TvActivity : AbstractActivity() {
 
     companion object {
 
-        public fun newIntent(context: Context): Intent {
+        fun newIntent(context: Context): Intent {
             return Intent(context, TvActivity::class.java)
         }
     }
-
-    private var hasSubsribeToSocketEvent: Boolean = false
-    private var socket: Socket = IO.socket(WEB_SERVICE_BASE_URL)
 
     private val gson: Gson
 
@@ -49,45 +45,10 @@ class TvActivity : AbstractActivity() {
         setContentView(R.layout.tv_activity)
         setTranslucideStatusBar()
 
-        if (!hasSubsribeToSocketEvent) {
-            subscribeEvent();
-        }
-
-        initSocket()
+        WebsocketManager.instance.subscribeEvent(PreferenceManager(baseContext).getRoom().name, onSupervisorMessage)
+        WebsocketManager.instance.subscribeEvent(EventType.stop.name, onStop)
 
         chronometer.start()
-    }
-
-    private fun subscribeEvent() {
-        socket.on(PreferenceManager(baseContext).getRoom().name, onSupervisorMessage)
-        socket.on(EventType.serverMessage.name, onServerMessage)
-        hasSubsribeToSocketEvent = true
-    }
-
-    private fun initSocket() {
-        Log.d(
-            LOGGER_TAG,
-            "init Socket.io connection ... "
-        )
-        //create connection
-        socket.connect()
-
-        if (socket.connected()) {
-            Log.d(
-                LOGGER_TAG,
-                "Socket.io connection success !")
-            socket.emit(
-                EventType.join.name,
-                PreferenceManager(baseContext).getRoom().name)
-        } else {
-            Log.e(
-                LOGGER_TAG,
-                "Socket.io connection failed, retry"
-            )
-            val handler = Handler()
-            val r = Runnable { initSocket() }
-            handler.postDelayed(r, 1000)
-        }
     }
 
 
@@ -98,6 +59,18 @@ class TvActivity : AbstractActivity() {
                     .fromJson(args[0] as String, MessageFrom::class.java)
                     .message
                 )
+            }
+        }
+
+    private val onStop =
+        Emitter.Listener { args: Array<Any> ->
+            runOnUiThread {
+                Log.d(SplashScreenActivity::class.java.simpleName, "Stop event intercepted, with room : " + args[0] as String)
+                if(PreferenceManager(baseContext).getRoom().name
+                        .equals(args[0] as String)){
+                    startActivity(SplashScreenActivity.newIntent(baseContext))
+                    finishAffinity()
+                }
             }
         }
 
@@ -113,12 +86,4 @@ class TvActivity : AbstractActivity() {
         text_message_tv.startAnimation(aniFade)
     }
 
-    private val onServerMessage =
-        Emitter.Listener { args: Array<Any?> ->
-           //TODO
-        }
-
-    private fun getMessage(data: JSONObject): String {
-        return data["message"] as String
-    }
 }

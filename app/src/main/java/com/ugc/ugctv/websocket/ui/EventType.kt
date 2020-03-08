@@ -4,7 +4,9 @@ enum class EventType {
     serverMessage,
     supervisorMessage,
     join,
-    joinRoom
+    joinRoom,
+    start,
+    stop
 
 
 }

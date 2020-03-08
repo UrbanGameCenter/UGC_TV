@@ -1,12 +1,11 @@
 package com.ugc.ugctv.splashscreen
 
-import android.content.pm.PackageManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import com.ugc.ugctv.core.AbstractActivity
 import com.ugc.ugctv.core.RequestCallBack
 import com.ugc.ugctv.model.Config
@@ -14,13 +13,21 @@ import com.ugc.ugctv.model.UgcError
 import com.ugc.ugctv.services.TechnicalService
 import com.ugc.ugctv.R
 import com.ugc.ugctv.core.PreferenceManager
-import com.ugc.ugctv.model.Room
+import com.ugc.ugctv.core.WebsocketManager
 import com.ugc.ugctv.settings.SettingsActivity
 import com.ugc.ugctv.tv.TvActivity
+import com.ugc.ugctv.websocket.model.EventType
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.splashscreen_activity.*
-import kotlinx.android.synthetic.main.tv_activity.*
 
 class SplashScreenActivity : AbstractActivity() {
+
+    companion object {
+
+        fun newIntent(context: Context): Intent {
+            return Intent(context, SplashScreenActivity::class.java)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +54,7 @@ class SplashScreenActivity : AbstractActivity() {
             object : RequestCallBack<Config> {
 
                 override fun onSuccess(response: Config) {
-                    showStartButton()
+                    showReadyState()
                 }
 
                 override fun onError(error: UgcError) {
@@ -58,18 +65,20 @@ class SplashScreenActivity : AbstractActivity() {
         )
     }
 
-    private fun showStartButton() {
+    private fun showReadyState() {
         progress_wheel.hide()
 
         if(PreferenceManager(baseContext).hasRoom()){
-            start_button.startAnimation(
+            ready_indicator.startAnimation(
                 AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in))
-            start_button.visibility = View.VISIBLE
+            ready_indicator.visibility = View.VISIBLE
 
-            start_button.setOnClickListener {
+            /*start_button.setOnClickListener {
                 startActivity(TvActivity.newIntent(baseContext))
                 finishAffinity()
-            }
+            }*/
+
+            WebsocketManager.instance.subscribeEvent(EventType.start.name, onStart)
         }
     }
 
@@ -83,4 +92,14 @@ class SplashScreenActivity : AbstractActivity() {
         progress_wheel.hide()
     }
 
+    private val onStart = Emitter.Listener { args: Array<Any?> ->
+        runOnUiThread {
+            Log.d(SplashScreenActivity::class.java.simpleName, "Start event intercepted, with room : " + args[0] as String)
+            if(PreferenceManager(baseContext).getRoom().name
+                    .equals(args[0] as String)){
+                startActivity(TvActivity.newIntent(baseContext))
+                finishAffinity()
+            }
+        }
+    }
 }

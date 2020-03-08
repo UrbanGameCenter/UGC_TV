@@ -13,6 +13,7 @@
     <string name="empty_value">-</string>
 
     <string name="app_version">Version de l\'application</string>
+    <string name="ready">Ready</string>
 
 
 </resources>
