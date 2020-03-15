@@ -1,14 +1,17 @@
 package com.ugc.ugctv.tv
 
+import android.R.id.text1
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.PowerManager
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ugc.ugctv.R
@@ -25,9 +28,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 
 class TvActivity : AbstractActivity() {
+
+    private val FORMAT = "%02d:%02d"
+
 
     companion object {
 
@@ -57,28 +64,50 @@ class TvActivity : AbstractActivity() {
         WebsocketManager.instance.subscribeEvent(PreferenceManager(baseContext).getRoom().name, onSupervisorMessage)
         WebsocketManager.instance.subscribeEvent(EventType.stop.name, onStop)
 
-        chronometer.start()
+        startCountDown()
     }
 
     private fun setupRessource() {
         when(PreferenceManager(baseContext).getRoom()) {
             Room.HOWARD_CARTER -> {
-                rootview.background = getDrawable(R.drawable.bg_howard_carter)
-                text_message_tv.setTextColor(resources.getColor(R.color.lightTextColor))
-                chronometer.setTextColor(resources.getColor(R.color.lightTextColor))
+                background.setImageDrawable(getDrawable(R.drawable.bg_howard_carter))
+                text_message_tv.setTextColor(ContextCompat.getColor(baseContext, R.color.lightTextColor))
+                countdown.setTextColor(ContextCompat.getColor(baseContext, R.color.lightTextColor))
             }
             Room.JIG_SAW -> {
-                rootview.background = getDrawable(R.drawable.bg_saw)
-                text_message_tv.setTextColor(resources.getColor(R.color.lightTextColor))
-                chronometer.setTextColor(resources.getColor(R.color.lightTextColor))
+                background.setImageDrawable(getDrawable(R.drawable.bg_saw))
+                text_message_tv.setTextColor(ContextCompat.getColor(baseContext, R.color.lightTextColor))
+                countdown.setTextColor(ContextCompat.getColor(baseContext, R.color.lightTextColor))
             }
             Room.PRISON_BREAKOUT -> {
-                text_message_tv.setTextColor(resources.getColor(R.color.lightTextColor))
-                chronometer.setTextColor(resources.getColor(R.color.lightTextColor))
+                background.setImageDrawable(getDrawable(R.drawable.bg_prison_break))
+                text_message_tv.setTextColor(ContextCompat.getColor(baseContext, R.color.lightTextColor))
+                countdown.setTextColor(ContextCompat.getColor(baseContext, R.color.lightTextColor))
             }
         }
     }
 
+    fun startCountDown(){
+        object : CountDownTimer(3600000, 1000) {
+            @SuppressLint("DefaultLocale")
+            override fun onTick(millisUntilFinished: Long) {
+                countdown.setText(
+                    java.lang.String.format(
+                        FORMAT,
+                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                            TimeUnit.MILLISECONDS.toHours(millisUntilFinished)
+                        ),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
+                        )
+                    )
+                )
+            }
+
+            override fun onFinish() {
+            }
+        }.start()
+    }
 
     private val onSupervisorMessage =
         Emitter.Listener { args: Array<Any> ->
