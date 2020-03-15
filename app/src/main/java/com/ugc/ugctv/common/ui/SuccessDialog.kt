@@ -55,7 +55,7 @@ class SuccessDialog :
     override fun onResume() {
         super.onResume()
 
-        root_view.setOnClickListener({ l -> dismiss()})
+        root_view.setOnClickListener({ dismiss()})
 
         if (!TextUtils.isEmpty(message)) {
             success_text.text = message

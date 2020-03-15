@@ -4,12 +4,15 @@
     <color name="colorAccent">#DD2583</color>
     <color name="colorAccentLight">#FD55c3</color>
 
+    <color name="lightTextColor">@color/light_grey</color>
+    <color name="textColor">#868893</color>
+    <color name="darktextColor">@color/antracite_grey</color>
 
     <color name="watermark">#24252c</color>
     <color name="antracite_grey">#404A56</color>
-    <color name="textColor">#868893</color>
     <color name="manatee_grey">#7F8894</color>
     <color name="light_grey">#E5EAF0</color>
+    <color name="text_shadow">#7F000000</color>
 
 
     <color name="dialog_overlay_transparency">#88000000</color>

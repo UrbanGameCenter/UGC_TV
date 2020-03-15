@@ -46,7 +46,6 @@ class SelectRoomDialogfragment : DialogFragment()  {
         linearLayoutManager.orientation = RecyclerView.VERTICAL
 
         val simple_recyclerview : RecyclerView =  thisView.findViewById(R.id.simple_recyclerview)
-
         simple_recyclerview.setLayoutManager(linearLayoutManager)
 
         simple_recyclerview.addItemDecoration(

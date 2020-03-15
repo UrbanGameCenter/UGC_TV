@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import com.ugc.ugctv.core.AbstractActivity
 import com.ugc.ugctv.core.RequestCallBack
 import com.ugc.ugctv.model.Config
@@ -14,6 +17,7 @@ import com.ugc.ugctv.services.TechnicalService
 import com.ugc.ugctv.R
 import com.ugc.ugctv.core.PreferenceManager
 import com.ugc.ugctv.core.WebsocketManager
+import com.ugc.ugctv.model.Room
 import com.ugc.ugctv.settings.SettingsActivity
 import com.ugc.ugctv.tv.TvActivity
 import com.ugc.ugctv.websocket.model.EventType
@@ -32,6 +36,10 @@ class SplashScreenActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        PreferenceManager(baseContext).setRoomName(Room.PRISON_BREAKOUT)
+
         setContentView(R.layout.splashscreen_activity)
         setTranslucideStatusBar()
 
@@ -39,6 +47,16 @@ class SplashScreenActivity : AbstractActivity() {
 
         settings.setOnClickListener { startActivity(SettingsActivity.newIntent(baseContext))}
     }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        when(keyCode) {
+            KeyEvent.KEYCODE_DPAD_CENTER -> startActivity(SettingsActivity.newIntent(baseContext))
+            KeyEvent.KEYCODE_BACK -> finishAffinity()
+        }
+
+        return true
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -72,11 +90,6 @@ class SplashScreenActivity : AbstractActivity() {
             ready_indicator.startAnimation(
                 AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in))
             ready_indicator.visibility = View.VISIBLE
-
-            /*start_button.setOnClickListener {
-                startActivity(TvActivity.newIntent(baseContext))
-                finishAffinity()
-            }*/
 
             WebsocketManager.instance.subscribeEvent(EventType.start.name, onStart)
         }

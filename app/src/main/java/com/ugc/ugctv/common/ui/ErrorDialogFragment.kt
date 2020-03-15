@@ -58,7 +58,7 @@ class ErrorDialogFragment : DialogFragment() {
     override fun onResume() {
         super.onResume()
 
-        cancel_button.setOnClickListener({ l -> dismiss()})
+        cancel_button.setOnClickListener({ dismiss()})
 
         if (!TextUtils.isEmpty(title)) {
             title_tv.text = title

@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.KeyEvent
+import android.widget.Toast
 import com.ugc.ugctv.R
 import com.ugc.ugctv.core.AbstractActivity
 import com.ugc.ugctv.core.PreferenceManager
@@ -33,16 +35,7 @@ class SettingsActivity : AbstractActivity() {
         }
 
         room_settingview.setOnClickListener{
-            selectRoomDialogfragment = SelectRoomDialogfragment()
-                .setCallBack(object :SelectRoomCallback{
-                    override fun onRoomSelected(room: Room) {
-                        PreferenceManager(baseContext).setRoomName(room)
-                        selectRoomDialogfragment.dismiss()
-                        room_settingview.setValue(PreferenceManager(baseContext).getRoom().readableName)
-                    }
-                })
-
-            selectRoomDialogfragment.show(supportFragmentManager, SUCCESS_DIALOG)
+            showSelectRoomDIalogFragment()
         }
 
         try {
@@ -53,5 +46,30 @@ class SettingsActivity : AbstractActivity() {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
+    }
+
+    private fun showSelectRoomDIalogFragment() {
+
+        selectRoomDialogfragment = SelectRoomDialogfragment()
+            .setCallBack(object :SelectRoomCallback{
+                override fun onRoomSelected(room: Room) {
+                    PreferenceManager(baseContext).setRoomName(room)
+                    selectRoomDialogfragment.dismiss()
+                    room_settingview.setValue(PreferenceManager(baseContext).getRoom().readableName)
+                }
+            })
+
+        selectRoomDialogfragment.show(supportFragmentManager, SUCCESS_DIALOG)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        when(keyCode) {
+            KeyEvent.KEYCODE_DPAD_CENTER -> showSelectRoomDIalogFragment()
+            KeyEvent.KEYCODE_BACK -> onBackPressed()
+            KeyEvent.KEYCODE_ESCAPE -> onBackPressed()
+
+        }
+
+        return true
     }
 }

@@ -4,22 +4,27 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
+import android.os.PowerManager
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
-
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ugc.ugctv.R
-import com.ugc.ugctv.core.*
+import com.ugc.ugctv.core.AbstractActivity
+import com.ugc.ugctv.core.PreferenceManager
+import com.ugc.ugctv.core.WebsocketManager
 import com.ugc.ugctv.model.MessageFrom
+import com.ugc.ugctv.model.Room
 import com.ugc.ugctv.splashscreen.SplashScreenActivity
 import com.ugc.ugctv.websocket.model.EventType
-import io.socket.client.IO
-import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.tv_activity.*
-import org.json.JSONObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class TvActivity : AbstractActivity() {
@@ -45,10 +50,33 @@ class TvActivity : AbstractActivity() {
         setContentView(R.layout.tv_activity)
         setTranslucideStatusBar()
 
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        setupRessource()
+
         WebsocketManager.instance.subscribeEvent(PreferenceManager(baseContext).getRoom().name, onSupervisorMessage)
         WebsocketManager.instance.subscribeEvent(EventType.stop.name, onStop)
 
         chronometer.start()
+    }
+
+    private fun setupRessource() {
+        when(PreferenceManager(baseContext).getRoom()) {
+            Room.HOWARD_CARTER -> {
+                rootview.background = getDrawable(R.drawable.bg_howard_carter)
+                text_message_tv.setTextColor(resources.getColor(R.color.lightTextColor))
+                chronometer.setTextColor(resources.getColor(R.color.lightTextColor))
+            }
+            Room.JIG_SAW -> {
+                rootview.background = getDrawable(R.drawable.bg_saw)
+                text_message_tv.setTextColor(resources.getColor(R.color.lightTextColor))
+                chronometer.setTextColor(resources.getColor(R.color.lightTextColor))
+            }
+            Room.PRISON_BREAKOUT -> {
+                text_message_tv.setTextColor(resources.getColor(R.color.lightTextColor))
+                chronometer.setTextColor(resources.getColor(R.color.lightTextColor))
+            }
+        }
     }
 
 
@@ -78,12 +106,16 @@ class TvActivity : AbstractActivity() {
 
         MediaPlayer.create(this, R.raw.message_arrived_notification_sound).start();
 
-        val aniFade =
-            AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
-
         text_message_tv.text = message
+        text_message_tv.visibility = View.VISIBLE
 
-        text_message_tv.startAnimation(aniFade)
+        text_message_tv.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in))
+
+        GlobalScope.launch(context = Dispatchers.Main) {
+            delay(60000)
+            text_message_tv.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out))
+            text_message_tv.visibility = View.GONE
+        }
     }
 
 }

@@ -60,7 +60,7 @@ abstract class AbstractActivity : AppCompatActivity() {
     }
 
     open fun hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing() && !this.isDestroyed) {
+        if (progressDialog.isShowing() && !this.isDestroyed) {
             progressDialog.dismiss()
         }
     }
