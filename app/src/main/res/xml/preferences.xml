@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/settings_title">
+
+        <ListPreference
+            android:key="KEY_ROOM_NAME"
+            android:title="@string/select_room_title"
+            android:summary="@string/select_room_title_summary"
+            android:entries="@array/room_names"
+            android:defaultValue="@null"
+            android:entryValues="@array/room_value" />
+
+        <androidx.preference.Preference
+            android:key="KEY_APP_VERSION"
+            android:title="@string/app_version"
+            app:selectable="false" />
+</androidx.preference.PreferenceScreen>

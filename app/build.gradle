@@ -10,10 +10,10 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.ugc.ugctv"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 29
-        versionCode 1
-        versionName "0.1.0"
+        versionCode 2
+        versionName "0.2.0"
         setProperty("archivesBaseName", "Ugc Room v" + versionName + " "+ new Date().format( 'dd-MM-yyyy' ))
 
     }
@@ -50,6 +50,11 @@ dependencies {
 
     //socket.io
     implementation 'io.socket:socket.io-client:1.0.0'
+
+    //leanback
+    def leanback_version = "1.0.0"
+    implementation "androidx.leanback:leanback:$leanback_version"
+    implementation "androidx.leanback:leanback-preference:$leanback_version"
 
     //firebase
     implementation 'com.google.firebase:firebase-analytics:17.2.2'

@@ -1,16 +1,12 @@
 package com.ugc.ugctv.core
 
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.ugc.ugctv.common.ui.ErrorDialogFragment
 import com.ugc.ugctv.common.ui.ProgressDialog
-import com.ugc.ugctv.common.ui.SuccessDialog
 
-abstract class AbstractActivity : AppCompatActivity() {
+abstract class AbstractActivity : FragmentActivity() {
 
     val ERROR_DIALOG = "errorDialog"
     val SUCCESS_DIALOG = "successMessage"
@@ -30,50 +26,8 @@ abstract class AbstractActivity : AppCompatActivity() {
         )
     }
 
-    open fun setFullscreenMode() {
-        window.decorView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-        window.statusBarColor = Color.TRANSPARENT
-    }
-
-    open fun setDarkStatusIcon() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val decor = window.decorView
-            decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = Color.WHITE
-        }
-    }
-
     protected open fun makeProgressDialog() {
         progressDialog = ProgressDialog(this)
-    }
-
-    open fun showProgressDialog() {
-        progressDialog.setText("")
-        progressDialog.show()
-    }
-
-    open fun showProgressDialog(message: String) {
-        progressDialog.setText(message)
-        progressDialog.show()
-    }
-
-    open fun hideProgressDialog() {
-        if (progressDialog.isShowing() && !this.isDestroyed) {
-            progressDialog.dismiss()
-        }
-    }
-
-    open fun showSuccessDialog(message: String) {
-        val successDialog : SuccessDialog = SuccessDialog()
-        .setMessage(message)
-
-        successDialog.show(supportFragmentManager, SUCCESS_DIALOG)
-    }
-
-    open fun showSuccessDialog() {
-        showSuccessDialog("")
     }
 
     open fun showError(message: String?) {

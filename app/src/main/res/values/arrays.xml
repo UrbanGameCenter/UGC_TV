@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="room_names">
+        <item>@string/room_howard_carter</item>
+        <item>@string/room_jig_saw</item>
+        <item>@string/room_prison_breakout</item>
+    </string-array>
+
+    <string-array name="room_value">
+        <item>HOWARD_CARTER</item>
+        <item>JIG_SAW</item>
+        <item>PRISON_BREAKOUT</item>
+    </string-array>
+</resources>

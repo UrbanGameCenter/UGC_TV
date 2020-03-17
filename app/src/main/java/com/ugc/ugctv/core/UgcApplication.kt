@@ -8,4 +8,10 @@ class UgcApplication : Application() {
         super.onCreate()
         WebsocketManager.instance
     }
+
+
+    override fun onTerminate() {
+        super.onTerminate()
+        WebsocketManager.instance.disconnect()
+    }
 }

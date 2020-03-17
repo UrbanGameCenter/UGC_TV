@@ -1,6 +1,5 @@
 package com.ugc.ugctv.tv
 
-import android.R.id.text1
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -88,7 +87,7 @@ class TvActivity : AbstractActivity() {
     }
 
     fun startCountDown(){
-        object : CountDownTimer(3600000, 1000) {
+        object : CountDownTimer(PreferenceManager(baseContext).getSessionDuration(), 1000) {
             @SuppressLint("DefaultLocale")
             override fun onTick(millisUntilFinished: Long) {
                 countdown.setText(
@@ -141,7 +140,7 @@ class TvActivity : AbstractActivity() {
         text_message_tv.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in))
 
         GlobalScope.launch(context = Dispatchers.Main) {
-            delay(60000)
+            delay(PreferenceManager(baseContext).getMessageDuration())
             text_message_tv.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out))
             text_message_tv.visibility = View.GONE
         }

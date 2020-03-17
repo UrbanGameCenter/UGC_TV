@@ -6,12 +6,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.ugc.ugctv.R
-import kotlinx.android.synthetic.main.splashscreen_activity.*
 
 class LoaderView : AppCompatImageView {
 

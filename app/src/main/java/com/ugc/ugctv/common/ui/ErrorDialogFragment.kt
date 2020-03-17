@@ -9,16 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.ugc.ugctv.R
 import kotlinx.android.synthetic.main.simple_dialog_fragment.*
 
 class ErrorDialogFragment : DialogFragment() {
-
-    var isLargeSize = false
-
 
     private var title: String? = null
     private var message: String? = null

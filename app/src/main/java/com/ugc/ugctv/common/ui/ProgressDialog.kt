@@ -7,8 +7,6 @@ import android.text.TextUtils
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
 import com.ugc.ugctv.R
 import kotlinx.android.synthetic.main.progress_dialog.*
 

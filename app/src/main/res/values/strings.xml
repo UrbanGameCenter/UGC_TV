@@ -8,12 +8,23 @@
     <string name="retry">Recommencer</string>
     <string name="start">Start</string>
     <string name="settings_title">Paramêtres de l\'application</string>
-    <string name="select_room">Salle sélectionnée</string>
+    <string name="select_room_title">Salle sélectionnée</string>
     <string name="empty_room">Aucune salle sélectionnée</string>
     <string name="empty_value">-</string>
 
     <string name="app_version">Version de l\'application</string>
     <string name="ready">Ready</string>
+    <string name="basic_preferences">Paramêtres généraux</string>
+    <string name="select_room_title_summary">Selectionnez une salle</string>
+
+
+    <!-- Room names -->
+    <string name="room_howard_carter">Le secret d\'Howard Carter</string>
+    <string name="room_jig_saw">Jig saw</string>
+    <string name="room_prison_breakout">Prison breakout</string>
+    <string name="message_duration">Durée d\'affichage des messages</string>
+    <string name="session_duration">Durée de la session</string>
+    <string name="message_duration_dialog">Saisissez la durée d\'affichage des messages (en seconde)</string>
 
 
 </resources>

@@ -8,16 +8,14 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
-import android.widget.Toast
+import com.ugc.ugctv.R
 import com.ugc.ugctv.core.AbstractActivity
+import com.ugc.ugctv.core.PreferenceManager
 import com.ugc.ugctv.core.RequestCallBack
+import com.ugc.ugctv.core.WebsocketManager
 import com.ugc.ugctv.model.Config
 import com.ugc.ugctv.model.UgcError
 import com.ugc.ugctv.services.TechnicalService
-import com.ugc.ugctv.R
-import com.ugc.ugctv.core.PreferenceManager
-import com.ugc.ugctv.core.WebsocketManager
-import com.ugc.ugctv.model.Room
 import com.ugc.ugctv.settings.SettingsActivity
 import com.ugc.ugctv.tv.TvActivity
 import com.ugc.ugctv.websocket.model.EventType
@@ -38,8 +36,6 @@ class SplashScreenActivity : AbstractActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        PreferenceManager(baseContext).setRoomName(Room.PRISON_BREAKOUT)
-
         setContentView(R.layout.splashscreen_activity)
         setTranslucideStatusBar()
 
@@ -50,8 +46,7 @@ class SplashScreenActivity : AbstractActivity() {
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         when(keyCode) {
-            KeyEvent.KEYCODE_DPAD_CENTER -> startActivity(SettingsActivity.newIntent(baseContext))
-            KeyEvent.KEYCODE_BACK -> finishAffinity()
+            KeyEvent.KEYCODE_DPAD_RIGHT -> settings.isSelected
         }
 
         return true
@@ -61,7 +56,7 @@ class SplashScreenActivity : AbstractActivity() {
     override fun onResume() {
         super.onResume()
 
-            getConfig()
+        getConfig()
     }
 
     private fun getConfig() {
@@ -71,7 +66,7 @@ class SplashScreenActivity : AbstractActivity() {
         TechnicalService(baseContext).getConfig(
             object : RequestCallBack<Config> {
 
-                override fun onSuccess(response: Config) {
+                override fun onSuccess(result: Config) {
                     showReadyState()
                 }
 
@@ -115,4 +110,6 @@ class SplashScreenActivity : AbstractActivity() {
             }
         }
     }
+
+
 }

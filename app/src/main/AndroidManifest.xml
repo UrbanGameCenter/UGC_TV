@@ -17,11 +17,9 @@
         android:banner="@drawable/ic_logo_ugc"
         android:name=".core.UgcApplication">
 
-
         <activity
             android:name=".splashscreen.SplashScreenActivity"
             android:configChanges="keyboard|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
             android:theme="@style/FullTranslucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,15 +30,12 @@
         <activity
             android:name=".tv.TvActivity"
             android:theme="@style/FullTranslucent"
-            android:configChanges="keyboard|keyboardHidden|navigation">
-
-        </activity>
+            android:configChanges="keyboard|keyboardHidden|navigation"/>
 
         <activity
             android:name=".settings.SettingsActivity"
             android:configChanges="keyboard|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
-            android:theme="@style/FullTranslucent"/>
+            android:theme="@style/ThemeUgcLeanbackPreferences"/>
 
     </application>
 
